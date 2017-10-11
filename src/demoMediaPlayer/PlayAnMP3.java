@@ -23,32 +23,35 @@ public class PlayAnMP3 extends Application {
   public static void main(String[] args) {
     launch(args);
   }
-  
+
   private int songsPlayed = 1;
+  private static MediaPlayer mediaPlayer;
+  
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-   
-    String path = "songfiles/LopingSting.mp3";    
+
+    String path = "songfiles/LopingSting.mp3";
     File file = new File(path);
-    URI uri = file.toURI();
     BorderPane all = new BorderPane();
     all.setTop(new Label("Play one song"));
+
+    // Create a complete path to the mp3 file
+    URI uri = file.toURI();
     all.setCenter(new Label(uri.toString()));
-     
     Media media = new Media(uri.toString());
-    MediaPlayer mediaPlayer = new MediaPlayer(media);
+    // Play the song
+    mediaPlayer = new MediaPlayer(media);
     mediaPlayer.setAutoPlay(true);
     mediaPlayer.play();
-    
+
     mediaPlayer.setOnEndOfMedia(new EndOfSongHandler());
-    
+
     Scene scene = new Scene(all, 600, 80);
     primaryStage.setScene(scene);
     primaryStage.show();
-    
   }
- 
+
   private class EndOfSongHandler implements Runnable {
     @Override
     public void run() {
@@ -56,8 +59,6 @@ public class PlayAnMP3 extends Application {
       Alert alert = new Alert(AlertType.INFORMATION);
       alert.setTitle("Message");
       alert.setHeaderText("Song ended, can now play song #" + songsPlayed);
-      alert.showAndWait();
-      
     }
   }
 }
