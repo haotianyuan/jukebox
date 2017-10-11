@@ -9,6 +9,9 @@ import java.io.File;
 import java.net.URI;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
@@ -23,18 +26,25 @@ public class PlayAnMP3 extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-
+   
     String path = "songfiles/LopingSting.mp3";    
-    System.out.println( System.getenv().entrySet());  
     File file = new File(path);
     URI uri = file.toURI();
-    System.out.println(uri);
+    BorderPane all = new BorderPane();
+    all.setTop(new Label("Play one song"));
+    all.setCenter(new Label(uri.toString()));
+     
     Media media = new Media(uri.toString());
     MediaPlayer mediaPlayer = new MediaPlayer(media);
     mediaPlayer.setAutoPlay(true);
     mediaPlayer.play();
     
     mediaPlayer.setOnEndOfMedia(new EndOfSongHandler());
+    
+    Scene scene = new Scene(all, 600, 80);
+    primaryStage.setScene(scene);
+    primaryStage.show();
+    
   }
  
   private class EndOfSongHandler implements Runnable {
