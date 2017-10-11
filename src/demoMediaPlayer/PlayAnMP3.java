@@ -10,6 +10,8 @@ import java.net.URI;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
@@ -51,7 +53,11 @@ public class PlayAnMP3 extends Application {
     @Override
     public void run() {
       songsPlayed++;
-      System.out.println("Song ended, play song #" + songsPlayed);
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle("Message");
+      alert.setHeaderText("Song ended, can now play song #" + songsPlayed);
+      alert.showAndWait();
+      
     }
   }
 }
