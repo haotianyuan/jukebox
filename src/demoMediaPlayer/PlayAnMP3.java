@@ -59,7 +59,7 @@ public class PlayAnMP3 extends Application {
       Alert alert = new Alert(AlertType.INFORMATION);
       alert.setTitle("Message");
       alert.setHeaderText("Song ended, can now play song #" + songsPlayed);
-      
+      alert.showAndWait();
     }
   }
 }
