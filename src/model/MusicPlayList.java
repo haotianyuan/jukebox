@@ -27,6 +27,7 @@ package model;
 		{
 			//first check whether it is a new day
 			LocalDate current = LocalDate.now();
+			
 			//if current date is newer than the date when this list created, update the date info, and reset both lists 
 			// to empty
 			if(localDate.compareTo(current) < 0)
@@ -49,12 +50,15 @@ package model;
 			}
 			else
 			{
-				if(recordingTimes.get(newSong) >= 3) // if the song today has already been chosen 3 times
+				if(recordingTimes.get(newSong) >= 3) { // if the song today has already been chosen 3 times
+					
 					return false;// the song can not be chosen any more today
+				}
 				else
 				{
 					recordingTimes.put(newSong,recordingTimes.get(newSong)+1);
 					list.add(newSong);
+					
 					return true;
 				}
 			}
@@ -73,6 +77,10 @@ package model;
 				index++;
 				return list.get(i);
 			}
+		}
+		
+		public ArrayList<Song> getList(){
+			return list;
 		}
 		
 

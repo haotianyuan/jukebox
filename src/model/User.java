@@ -1,15 +1,39 @@
 package model;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
 public class User {
 	private String accountName;
 	private String password;
 	private boolean admin;
+	private int chance;
+	private LocalDate localDate;
+	private MusicPlayList playlist;
 	public User(String name,String password,boolean admin) {
 		accountName=name;
 		this.password=password;
 		this.admin=admin;
+		chance=3;
+		localDate=LocalDate.now();
+		playlist=new MusicPlayList();
 	}
 	
+	public boolean add(Song song) {
+		if(LocalDate.now().compareTo(localDate)!=0) {//update the time and chance 
+			localDate=LocalDate.now();
+			chance=3;
+		}
+		if(playlist.add(song)==true && chance>0) {
+			chance--;
+			return true;
+		}
+		return false;
+	}
+	
+	public ArrayList<Song> getlist(){
+		return playlist.getList();
+	}
 	public String getAccountName() {
 		return accountName;
 	}
@@ -22,12 +46,6 @@ public class User {
 		return admin;
 	}
 	
-	public boolean vertifyAccount(String name,String pass) {
-		if(name.compareTo(accountName)==0 && pass.compareTo(password)==0) {
-			return true;
-		}
-		return false;
-	}
 	//这个方法是我加的， 因为要应用ObservableList
 	public String toString()
 	{
