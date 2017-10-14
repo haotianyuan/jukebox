@@ -28,5 +28,13 @@ public class User {
 		}
 		return false;
 	}
+	//这个方法是我加的， 因为要应用ObservableList
+	public String toString()
+	{
+		String type = "Normal";
+		if(admin)
+			type = "Admin";
+		return "Account name: " + accountName + "    Account Type: " + type;
+	}
 	
 }
