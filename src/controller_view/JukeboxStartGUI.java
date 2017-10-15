@@ -111,6 +111,7 @@ public class JukeboxStartGUI extends Application {
 		window.add(label1, 0, 3);
 		window.add(label2, 0, 4);
 		textField1.setMaxWidth(130);
+		
 		window.add(textField1, 1, 3);
 		textField2.setMaxWidth(130);
 		window.add(textField2, 1, 4);
