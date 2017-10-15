@@ -1,6 +1,6 @@
 package model;
 // Added to allow package model to exist on GitHub
-public class Song implements Comparable{
+public class Song implements Comparable<Song>{
 	private String path;
 	public Song(String path) {
 		this.path=path;
@@ -10,10 +10,15 @@ public class Song implements Comparable{
 		return path;
 	}
 	
+	public String toString()
+	{
+		return path;
+	}
 	
 	@Override
-	public int compareTo(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(Song o) {
+		if(this.getPath().equals(o.getPath()))
+			return 0;
+		return 1;
 	}
 }

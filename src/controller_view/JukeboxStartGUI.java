@@ -9,9 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -19,7 +17,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -82,6 +79,9 @@ public class JukeboxStartGUI extends Application {
 	private boolean vertify = false;
 	private User user;
 	private boolean isplaying = false;
+	//-----------------------------------set up two songs in advance---------------------------
+	private Song song1 = new Song("songfiles/Capture.mp3");//for button3
+	private Song song2 = new Song("songfiles/DanseMacabreViolinHook.mp3");//for button4
 
 	public static void main(String[] args) {
 		launch(args);
@@ -111,7 +111,6 @@ public class JukeboxStartGUI extends Application {
 		window.add(label1, 0, 3);
 		window.add(label2, 0, 4);
 		textField1.setMaxWidth(130);
-		
 		window.add(textField1, 1, 3);
 		textField2.setMaxWidth(130);
 		window.add(textField2, 1, 4);
@@ -176,16 +175,16 @@ public class JukeboxStartGUI extends Application {
 		// -----------------------------------------------------
 
 	}
-	
-	public void playsongs() {//专门用来放歌的方法
-		//System.out.println(playlist.getList().size());
-		while (isplaying == false && playlist.getList().size()!=0) {
-			
+
+	public void playsongs() {
+		// 专门用来放歌的方法
+		// System.out.println(playlist.getList().size());//debug
+		while (isplaying == false && playlist.getList().size() != 0) {
+
 			String path = playlist.getList().get(0).getPath();
-		
+			//System.out.println(playlist.getList().get(0).getPath());//debug
 			File file = new File(path);
 			URI uri = file.toURI();
-			all.setCenter(new Label(uri.toString()));
 			Media media = new Media(uri.toString());
 			// Play the song
 			mediaPlayer = new MediaPlayer(media);
@@ -193,8 +192,8 @@ public class JukeboxStartGUI extends Application {
 			mediaPlayer.play();
 			isplaying = true;
 			mediaPlayer.setOnEndOfMedia(new EndOfSongHandler());
-				
-	}
+
+		}
 
 	}
 
@@ -205,16 +204,25 @@ public class JukeboxStartGUI extends Application {
 			String ID = textField1.getText();
 			String password = textField2.getText();
 			boolean isAdmin = false;
-			for (int i = 0; i < userList.size(); i++) {// check if the account and password are valid
-				if (userList.get(i).getPassword().compareTo(password) == 0
-						&& userList.get(i).getAccountName().compareTo(ID) == 0) {
-					vertify = true;
-					isAdmin = userList.get(i).getAdmin();
-					button3.setText("Select song 1");
-					button4.setText("Select song 2");
-					break;
-				} else {
-					label3.setText("Invalid account");
+			
+			if (button1 == arg0.getSource()) {
+				for (int i = 0; i < userList.size(); i++) {
+					// check if the account and password are valid
+					if (userList.get(i).getPassword().compareTo(password) == 0
+							&& userList.get(i).getAccountName().compareTo(ID) == 0) {
+						vertify = true;
+						textField1.setDisable(true);
+						textField2.setDisable(true);
+						isAdmin = userList.get(i).getAdmin();
+						// ------------------------------This is what I added---------------
+						user = userList.get(i);
+						System.out.println("The current user is:" + user.getAccountName());// debug
+						label3.setText("Already logged in");
+						// -------------------------------------------
+						break;
+					} else {
+						label3.setText("Invalid account");
+					}
 				}
 			}
 			/**
@@ -223,29 +231,27 @@ public class JukeboxStartGUI extends Application {
 			 * following can be executed
 			 */
 			// 如果登陆的是管理员账户的话，要将 isAdmin 设置为 true， 这里我为了方便测试， 使其默认为 true
-			if (vertify) {
-				if (isAdmin) {
-					newStage.show();// 展示用户列表界面
-					registerListeners();// 设置用户列表界面上的按钮与搜索条
-					user=new User(ID,password,true);
-				} else {
-					user = new User(ID, password, isAdmin);
-					label3.setText("Login successfully");
-
-				}
-
-			}
-
-			if (button2 == arg0.getSource() && vertify == true) {// log out
+			if (isAdmin) 
+			{
+				newStage.show();// 展示用户列表界面
+				registerListeners();// 设置用户列表界面上的按钮与搜索条
+			} 
+			// if the log out button is pressed, check whether there is a user logged in
+			if (button2 == arg0.getSource() && vertify == true) 
+			{
+				System.out.println("User: " + user.getAccountName() + " logged out");//debug
 				vertify = false;
-				textField1.setText("");
-				textField2.setText("");
+				textField1.clear();
+				textField2.clear();
+				textField1.setDisable(false);
+				textField2.setDisable(false);
 				label3.setText("Login first");
 				newStage.close();
 			}
 		}
 
-		private void registerListeners() {
+		private void registerListeners() 
+		{
 			searchBar.textProperty().addListener(new SearchBarListener());
 			removeButton.setOnAction(new RemoveButtonListener());
 			addAccountButtton.setOnAction(new addAccountButtonListener());
@@ -257,39 +263,28 @@ public class JukeboxStartGUI extends Application {
 
 		@Override
 		public void handle(ActionEvent arg0) {
-			if (vertify == true) {// if a user is logining in
-				if (button3 == arg0.getSource()) {// add song1
-					Song temp = new Song("songfiles/Capture.mp3");//user开始选歌了
-					user.add(temp);
-					if(user.getchance()==0) {
-						button3.setText("No chance!");
-						button4.setText("No chance!");
+			
+			if (vertify == true) 
+			 {
+				// if a user already logged in successfully
+				if (button3 == arg0.getSource()) {
+					// add song1
+					if (user.selectSong()) {
+						System.out.println(playlist.add(song1));
+					} else {
+						System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
 					}
-					else {
-						button3.setText("Select song 1");
-						button4.setText("Select song 2");
-					}
-					//System.out.println("a");
-					playlist.add(temp);
-					//System.out.println(playlist.add(temp));
 				}
-				if (button4 == arg0.getSource()) {// add song2
-					Song temp = new Song("songfiles/DanseMacabreViolinHook.mp3");
-					user.add(temp);
-					if(user.getchance()==0) {
-						button3.setText("No chance!");
-						button4.setText("No chance!");
+				if (button4 == arg0.getSource()) {
+					if (user.selectSong()) {
+						System.out.println(playlist.add(song2));
+					} else {
+						System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
 					}
-					else {
-						button3.setText("Select song 1");
-						button4.setText("Select song 2");
-					}
-					playlist.add(temp);
-					//System.out.println(playlist.add(temp));
-				}			
+				}
 				playsongs();
 
-		}
+			}
 		}
 	}
 
@@ -369,8 +364,7 @@ public class JukeboxStartGUI extends Application {
 		@Override
 		public void run() {
 			isplaying = false;
-			playlist.getList().remove(0);//放完一首歌，把这首歌删了
-		
+			playlist.getList().remove(0);// 放完一首歌，把这首歌删了
 			playsongs();
 		}
 	}

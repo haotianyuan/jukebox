@@ -1,7 +1,7 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+
 
 public class User {
 	private String accountName;
@@ -9,31 +9,32 @@ public class User {
 	private boolean admin;
 	private int chance;
 	private LocalDate localDate;
-	private MusicPlayList playlist;
-	public User(String name,String password,boolean admin) {
+	
+	public User(String name,String password,boolean admin) 
+	{
 		accountName=name;
 		this.password=password;
 		this.admin=admin;
 		chance=3;
 		localDate=LocalDate.now();
-		playlist=new MusicPlayList();
 	}
 	
-	public boolean add(Song song) {
-		if(LocalDate.now().compareTo(localDate)!=0) {//update the time and chance 
-			localDate=LocalDate.now();
-			chance=3;
+	public boolean selectSong() {
+		if (LocalDate.now().compareTo(localDate) > 0) 
+		{// if it is a new day
+			localDate = LocalDate.now();
+			chance = 3;
 		}
-		if(playlist.add(song)==true && chance>0) {
+		if(chance!=0)
+		{
 			chance--;
 			return true;
 		}
-		return false;
+		else
+			return false;
 	}
 	
-	public ArrayList<Song> getlist(){
-		return playlist.getList();
-	}
+	
 	public String getAccountName() {
 		return accountName;
 	}

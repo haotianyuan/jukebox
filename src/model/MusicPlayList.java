@@ -46,12 +46,13 @@ package model;
 			{
 				recordingTimes.put(newSong, 1);
 				list.add(newSong);
+				System.out.println(recordingTimes);//debug
 				return true;
 			}
 			else
 			{
 				if(recordingTimes.get(newSong) >= 3) { // if the song today has already been chosen 3 times
-					
+					System.out.println("Song: " + newSong.getPath() + " already been selected 3 times today");//debug
 					return false;// the song can not be chosen any more today
 				}
 				else
