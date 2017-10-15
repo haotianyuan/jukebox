@@ -50,6 +50,10 @@ public class User {
 	public int getchance() {
 		return chance;
 	}
+	public void recovChance()
+	{
+		chance++;
+	}
 	//这个方法是我加的， 因为要应用ObservableList
 	public String toString()
 	{

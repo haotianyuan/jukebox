@@ -13,7 +13,7 @@ package model;
 		private int index;//indicates which song to play next time
 		private LocalDate localDate;
 		public Map<Song,Integer> recordingTimes;//keep track of how many times each song has been added
-		// to the list one single day, if the times lager than three, the song can not be added today 
+		// to the list one single day, if the times larger than three, the song can not be added today 
 		
 		public MusicPlayList()
 		{

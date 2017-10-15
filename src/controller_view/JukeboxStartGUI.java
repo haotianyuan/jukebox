@@ -267,17 +267,24 @@ public class JukeboxStartGUI extends Application {
 			if (vertify == true) 
 			 {
 				// if a user already logged in successfully
+				boolean hint = false;
 				if (button3 == arg0.getSource()) {
 					// add song1
 					if (user.selectSong()) {
-						System.out.println(playlist.add(song1));
+						hint = playlist.add(song1);
+						System.out.println(hint);
+						if(!hint)
+							user.recovChance();
 					} else {
 						System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
 					}
 				}
 				if (button4 == arg0.getSource()) {
 					if (user.selectSong()) {
-						System.out.println(playlist.add(song2));
+						hint = playlist.add(song2);
+						System.out.println(hint);
+						if(!hint)
+							user.recovChance();
 					} else {
 						System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
 					}
@@ -329,7 +336,7 @@ public class JukeboxStartGUI extends Application {
 		public void handle(ActionEvent arg0) {
 			String newAcName = textField3.getText();
 			String newPw = textField4.getText();
-			// 消除用户名与密码中头尾的空格
+			// erase the trailing and leading spaces 
 			newAcName = newAcName.trim();
 			newPw = newAcName.trim();
 			if (newAcName.equals("") || newPw.equals("")) {
