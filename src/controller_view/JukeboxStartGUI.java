@@ -177,6 +177,7 @@ public class JukeboxStartGUI extends Application {
 	}
 	
 	public void playsongs() {//专门用来放歌的方法
+		//System.out.println(playlist.getList().size());
 		while (isplaying == false && playlist.getList().size()!=0) {
 			
 			String path = playlist.getList().get(0).getPath();
@@ -208,6 +209,8 @@ public class JukeboxStartGUI extends Application {
 						&& userList.get(i).getAccountName().compareTo(ID) == 0) {
 					vertify = true;
 					isAdmin = userList.get(i).getAdmin();
+					button3.setText("Select song 1");
+					button4.setText("Select song 2");
 					break;
 				} else {
 					label3.setText("Invalid account");
@@ -223,6 +226,7 @@ public class JukeboxStartGUI extends Application {
 				if (isAdmin) {
 					newStage.show();// 展示用户列表界面
 					registerListeners();// 设置用户列表界面上的按钮与搜索条
+					user=new User(ID,password,true);
 				} else {
 					user = new User(ID, password, isAdmin);
 					label3.setText("Login successfully");
@@ -254,14 +258,33 @@ public class JukeboxStartGUI extends Application {
 		public void handle(ActionEvent arg0) {
 			if (vertify == true) {// if a user is logining in
 				if (button3 == arg0.getSource()) {// add song1
-					Song temp = new Song("songfiles/LopingSting.mp3");//user开始选歌了
+					Song temp = new Song("songfiles/Capture.mp3");//user开始选歌了
 					user.add(temp);
+					if(user.getchance()==0) {
+						button3.setText("No chance!");
+						button4.setText("No chance!");
+					}
+					else {
+						button3.setText("Select song 1");
+						button4.setText("Select song 2");
+					}
+					//System.out.println("a");
 					playlist.add(temp);
+					//System.out.println(playlist.add(temp));
 				}
 				if (button4 == arg0.getSource()) {// add song2
-					Song temp = new Song("songfiles/Capture.mp3");
+					Song temp = new Song("songfiles/DanseMacabreViolinHook.mp3");
 					user.add(temp);
+					if(user.getchance()==0) {
+						button3.setText("No chance!");
+						button4.setText("No chance!");
+					}
+					else {
+						button3.setText("Select song 1");
+						button4.setText("Select song 2");
+					}
 					playlist.add(temp);
+					//System.out.println(playlist.add(temp));
 				}			
 				playsongs();
 
@@ -345,8 +368,8 @@ public class JukeboxStartGUI extends Application {
 		@Override
 		public void run() {
 			isplaying = false;
-			user.getlist().remove(0);//放完一首歌，把这首歌删了
-			playlist.getList().remove(0);
+			playlist.getList().remove(0);//放完一首歌，把这首歌删了
+		
 			playsongs();
 		}
 	}
