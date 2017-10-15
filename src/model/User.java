@@ -46,6 +46,9 @@ public class User {
 		return admin;
 	}
 	
+	public int getchance() {
+		return chance;
+	}
 	//这个方法是我加的， 因为要应用ObservableList
 	public String toString()
 	{
