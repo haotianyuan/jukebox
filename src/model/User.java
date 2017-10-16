@@ -2,12 +2,20 @@ package model;
 
 import java.time.LocalDate;
 
+/*===============================================================
+|Author:     Haotian Yuan  Jiaming Hao
+|
+|Class name:  Song
+|
+|Description: A class represents users
+*==============================================================*/
 
 public class User {
+	
 	private String accountName;
 	private String password;
 	private boolean admin;
-	private int chance;
+	private int chance;// three times for each day
 	private LocalDate localDate;
 	
 	public User(String name,String password,boolean admin) 
@@ -18,7 +26,17 @@ public class User {
 		chance=3;
 		localDate=LocalDate.now();
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method: selectSong
+	  |
+	  |  Purpose:   Whenever a user select a song on GUI, this method will
+	  |             be called, returns true indicating song selected, otherwise
+	  |             returns false
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    Boolean
+	  *-------------------------------------------------------------------*/
 	public boolean selectSong() {
 		if (LocalDate.now().compareTo(localDate) > 0) 
 		{// if it is a new day
@@ -34,27 +52,76 @@ public class User {
 			return false;
 	}
 	
-	
+	/*---------------------------------------------------------------------
+	  |  Method: getAccountName
+	  |
+	  |  Purpose:   return account name
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    String
+	  *-------------------------------------------------------------------*/
 	public String getAccountName() {
 		return accountName;
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method: getPassword
+	  |
+	  |  Purpose:   return password
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    String
+	  *-------------------------------------------------------------------*/
 	public String getPassword() {
 		return password;
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method: getAdmin
+	  |
+	  |  Purpose:   return account property
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    Boolean
+	  *-------------------------------------------------------------------*/
 	public boolean getAdmin() {
 		return admin;
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method: getchance
+	  |
+	  |  Purpose:   return account times
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    Integer
+	  *-------------------------------------------------------------------*/
 	public int getchance() {
 		return chance;
 	}
+	/*---------------------------------------------------------------------
+	  |  Method: recovChance
+	  |
+	  |  Purpose:   increment the chance by 1 
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
 	public void recovChance()
 	{
 		chance++;
 	}
-	//这个方法是我加的， 因为要应用ObservableList
+	/*---------------------------------------------------------------------
+	  |  Method: toString
+	  |
+	  |  Purpose:   Method used to debug and show message on GUI
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    String
+	  *-------------------------------------------------------------------*/
 	public String toString()
 	{
 		String type = "Normal";

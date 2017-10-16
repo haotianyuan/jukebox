@@ -1,4 +1,11 @@
-
+/*===============================================================
+|Author:     Jiaming Hao
+|
+|Class name:  MusicPlayList
+|
+|Description: A class implemented as queue to be used in Jukebox
+|             to play songs
+*==============================================================*/
 
 package model;
 
@@ -22,7 +29,16 @@ package model;
 			localDate = LocalDate.now();//update the date to current date when the list is created
 			recordingTimes = new TreeMap<Song, Integer>();
 		}
-		
+		/*---------------------------------------------------------------------
+		  |  Method: add
+		  |
+		  |  Purpose:    A method used to add songs, return true to indicate 
+		  |              a song has been added, otherwise return false
+		  |  
+		  |  Parameters: Song 
+		  |
+		  |  Returns:    boolean
+		  *-------------------------------------------------------------------*/
 		public boolean add(Song newSong)
 		{
 			//first check whether it is a new day
@@ -53,18 +69,25 @@ package model;
 			{
 				if(recordingTimes.get(newSong) >= 3) { // if the song today has already been chosen 3 times
 					System.out.println("Song: " + newSong.getPath() + " already been selected 3 times today");//debug
-					return false;// the song can not be chosen any more today
+					return false;// the song can not be added any more today
 				}
 				else
 				{
 					recordingTimes.put(newSong,recordingTimes.get(newSong)+1);
 					list.add(newSong);
-					
 					return true;
 				}
 			}
 		}
-		
+		/*---------------------------------------------------------------------
+		  |  Method: nextSong
+		  |
+		  |  Purpose:  A method used to give next song in the list
+		  |  
+		  |  Parameters: None 
+		  |
+		  |  Returns:    Song
+		  *-------------------------------------------------------------------*/
 		public Song nextSong()
 		{
 			if(index >= list.size()||index == -1)
@@ -79,8 +102,17 @@ package model;
 				return list.get(i);
 			}
 		}
-		
-		public ArrayList<Song> getList(){
+		/*---------------------------------------------------------------------
+		  |  Method: getList
+		  |
+		  |  Purpose:  A method return the instance variable list
+		  |  
+		  |  Parameters: None 
+		  |
+		  |  Returns:    ArrayList<Song> 
+		  *-------------------------------------------------------------------*/
+		public ArrayList<Song> getList()
+		{
 			return list;
 		}
 		
