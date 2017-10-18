@@ -35,15 +35,35 @@ import java.net.URI;
 
 
 /*===============================================================
-|Author:      Haotian Yuan Jiaming Hao
+|Author:      Haotian Yuan, Jiaming Hao
 |
 |Class name:  JukeBoxStartGUI
 |
-|Description: This program is a functional spike to determine 
-|             the interactions are actually working. It is an 
-|             event-driven program with a graphical user interface 
-|             to affirm the functionality all Iteration 1 tasks have 
-|             been completed and are working correctly.
+|Description: The GUI of Jukebox, user can log in, select song
+|             and log out, every user can select up to 3 songs 
+|             per day, and no songs can be selected over 3 times
+|             in one day.
+|
+|Functional spike:   Log in to Chris to check log in works
+|                                ↓
+|                    Make sure Chris can select song
+|                                ↓
+|                    Make sure songs played in FIFO order
+|                                ↓
+|                    Make sure Chris has no more than 3 times chance
+|                                ↓
+|                         Chris logs out
+|                                ↓
+|                    Repeat the above checking for user Devon,
+|                    River,Ryan and Merlin
+|                                ↓
+|					 Pay attention that Merlin can modify other users' accounts
+|                    and also be careful that each song can not be selected over
+|                    3 times a time
+|					 			 ↓
+|					 Wait for a new day to see if users' times recover
+|                    also to check whether those songs reached max selected
+|                    times yesterday can be selected again 
 *==============================================================*/
 
 public class JukeboxStartGUI extends Application {
