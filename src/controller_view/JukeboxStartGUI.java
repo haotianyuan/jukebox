@@ -59,7 +59,7 @@ import java.net.URI;
 |                                ↓
 |					 Pay attention that Merlin can modify other users' accounts
 |                    and also be careful that each song can not be selected over
-|                    3 times a time
+|                    3 times a day
 |					 			 ↓
 |					 Wait for a new day to see if users' times recover
 |                    also to check whether those songs reached max selected
