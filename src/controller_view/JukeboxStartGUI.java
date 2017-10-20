@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -25,12 +26,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.MusicPlayList;
 import model.Song;
 import model.User;
+import model.tableView;
 import java.io.File;
 import java.net.URI;
+import java.time.LocalDate;
 
 
 
@@ -59,7 +63,7 @@ import java.net.URI;
 |                                ↓
 |					 Pay attention that Merlin can modify other users' accounts
 |                    and also be careful that each song can not be selected over
-|                    3 times a day
+|                    3 times a time
 |					 			 ↓
 |					 Wait for a new day to see if users' times recover
 |                    also to check whether those songs reached max selected
@@ -76,8 +80,7 @@ public class JukeboxStartGUI extends Application {
 	private Label label3 = new Label("Login first");
 	private Label status = new Label();
 	private Button button2 = new Button("Log out");
-	private Button button3 = new Button("Select song 1");
-	private Button button4 = new Button("Select song 2");
+	private Button button3 = new Button("Select songs");
 	private Button button5 = new Button("Manage");
 	private HBox Hbox = new HBox();
 	// ------------------------------------------------------
@@ -111,10 +114,18 @@ public class JukeboxStartGUI extends Application {
 	private boolean vertify = false;
 	private User user;
 	private boolean isplaying = false;
-	//-----------------------------------set up two songs in advance---------------------------
-	private Song song1 = new Song("songfiles/Capture.mp3");//for button3
-	private Song song2 = new Song("songfiles/DanseMacabreViolinHook.mp3");//for button4
-
+    //-----------------------------------------------------------------------------------
+	private static tableView tableViewer = new tableView();
+	private Stage newStage3 = new Stage();
+	private BorderPane pane = new BorderPane();
+	private Button select=new Button("Select");
+	
+	//-----------------------------------------------------------------------------------
+	private LocalDate local = LocalDate.now();
+	
+	
+	
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -130,6 +141,16 @@ public class JukeboxStartGUI extends Application {
 	  *-------------------------------------------------------------------*/
 	@Override
 	public void start(Stage primaryStage) {
+		//------------------------------------------------------------------
+		autoUpdater r = new autoUpdater();
+		Thread t = new Thread(r);
+		t.setDaemon(true);
+		t.start();
+		System.out.println("AutoUpdater starts!");
+		//-----------------------------
+		
+		
+		
 		// -----------------------set up the userList-----------------------------
 		User a = new User("Chris", "1", false);
 		User b = new User("Devon", "22", false);
@@ -148,7 +169,7 @@ public class JukeboxStartGUI extends Application {
 		window.add(Hbox, 0, 0, 2, 2);
 		Hbox.setPadding(new Insets(0, 15, 0, 15));
 		Hbox.setSpacing(15);
-		Hbox.getChildren().addAll(button3, button4);
+		Hbox.getChildren().addAll(button3);
 		
 		window.setHgap(10);
 		window.setVgap(10);
@@ -170,8 +191,7 @@ public class JukeboxStartGUI extends Application {
 		button1.setOnAction(new buttonListener());
 		button2.setOnAction(new buttonListener());
 		button5.setOnAction(new buttonListener());
-		button3.setOnAction(new addsongbuttonListener());
-		button4.setOnAction(new addsongbuttonListener());
+		button3.setOnAction(new tableViewListener());
 		// ---------------------------------------------------------------------------
 		
 		Scene scene = new Scene(window, 290, 250);
@@ -219,7 +239,14 @@ public class JukeboxStartGUI extends Application {
 			}
 		});
 		// -----------------------------------------------------
-
+		newStage3.setTitle("Song List");
+		Label label = new Label("Song List");
+		label.setFont(new Font("Arial", 16));
+		pane.setTop(label);
+		pane.setCenter(tableViewer);
+		pane.setBottom(select);
+		Scene scene1 = new Scene(pane, 423, 320);
+		newStage3.setScene(scene1);
 	}
 	/*---------------------------------------------------------------------
 	  |  Method: playsongs
@@ -238,6 +265,7 @@ public class JukeboxStartGUI extends Application {
 			File file = new File(path);
 			URI uri = file.toURI();
 			Media media = new Media(uri.toString());
+			
 			// Play the song
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(true);
@@ -282,7 +310,7 @@ public class JukeboxStartGUI extends Application {
 						// ------------------------------This is what I added---------------
 						isAdmin = userList.get(i).getAdmin();
 						System.out.println("The current user is:" + user.getAccountName());// debug
-						//label3.setText("Already logged in");
+					
 						// -------------------------------------------
 						break;
 					} else {
@@ -336,62 +364,7 @@ public class JukeboxStartGUI extends Application {
 		}
 
 	}
-	/*===============================================================
-	|Class name:  addsongbuttonListener
-	|
-	|Description:  Class includes method handling the songs selected 
-	|              by user through pressing addSong Button
-	*==============================================================*/
-	private class addsongbuttonListener implements EventHandler<ActionEvent> {
-
-		@Override
-		public void handle(ActionEvent arg0) {
-			
-			if (vertify == true) 
-			 {
-				// if a user already logged in successfully
-				boolean hint = false;
-				if (button3 == arg0.getSource()) {
-					// add song1
-					if (user.selectSong()) {
-						hint = playlist.add(song1);
-						//System.out.println(hint);//debug
-						if(!hint)
-						{
-							user.recovChance();
-							status.setText("Song1 already selected 3 times today");
-						}
-						else
-						{
-							status.setText("   Song1 has been added to the list");
-						}
-					} else {
-						System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
-						status.setText("   Sorry, You run out today's times");
-					}
-				}
-				if (button4 == arg0.getSource()) {
-					if (user.selectSong()) {
-						hint = playlist.add(song2);
-						System.out.println(hint);
-						if (!hint) {
-							user.recovChance();
-							status.setText("Song2 already selected 3 times today");
-						}
-						else
-						{
-							status.setText("   Song2 has been added to the list");
-						}
-					} else {
-						System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
-						status.setText("   Sorry, You run out today's times");
-					}
-				}
-				playsongs();
-
-			}
-		}
-	}
+	
 
 	/*===============================================================
 	|Class name:  SearchBarListener
@@ -508,5 +481,77 @@ public class JukeboxStartGUI extends Application {
 			playsongs();
 		}
 	}
+	
+	private class tableViewListener implements EventHandler<ActionEvent> {
 
+		@Override
+		public void handle(ActionEvent arg0) {
+			if(vertify==true) {
+			newStage3.show();
+			select.setOnAction(new SelectButtonListener());
+			}
+		}
+
+	}
+	
+	private class SelectButtonListener implements EventHandler<ActionEvent> {
+
+		private Song selectedSong;
+
+		@Override
+		public void handle(ActionEvent arg0) {
+			if (vertify == true) {
+				// if a user already logged in successfully
+				boolean hint = false;
+				selectedSong = tableViewer.getSelectionModel().getSelectedItem();
+				// Song temp=new Song(selectedSong.getPath());
+				if (user.selectSong()) {
+					hint = playlist.add(selectedSong);
+					// System.out.println(hint);//debug
+					if (!hint) {
+						user.recovChance();
+						status.setText(selectedSong.getTitle() + " already selected 3 times today");
+					} else {
+						status.setText(selectedSong.getTitle() + " is selected");
+						selectedSong.setPlayed(selectedSong.getPlayed() + 1);
+					}
+				} else {
+					System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
+					status.setText("   Sorry, You run out today's times");
+				}
+			}
+
+			playsongs();
+			tableViewer.refresh();
+		}
+	}
+	
+	private class autoUpdater extends Task<Object>
+	{
+
+		@Override
+		public void run() {
+			while (true) {
+				LocalDate now = LocalDate.now();
+				//System.out.println("Begin update......");
+				if (local.compareTo(now) < 0) {
+					local = now;
+					 System.out.println("Begin update......");
+					for (Song song : tableViewer.getItems()) {
+						song.setPlayed(song.getPlayed() % 3);
+					}
+					 System.out.println("Update finishes......");
+					tableViewer.refresh();
+					
+				}
+			}
+		}
+
+		@Override
+		protected Object call() throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
 }

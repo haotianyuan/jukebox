@@ -49,8 +49,7 @@ package model;
 			if(localDate.compareTo(current) < 0)
 			{
 				localDate = current;
-				//list = new ArrayList<Song>();
-				//index = -1;//reset the index
+				
 				recordingTimes = new TreeMap<Song, Integer>();
 			}
 			
@@ -69,12 +68,14 @@ package model;
 			{
 				if(recordingTimes.get(newSong) >= 3) { // if the song today has already been chosen 3 times
 					System.out.println("Song: " + newSong.getPath() + " already been selected 3 times today");//debug
+					System.out.println(recordingTimes);//debug
 					return false;// the song can not be added any more today
 				}
 				else
 				{
 					recordingTimes.put(newSong,recordingTimes.get(newSong)+1);
 					list.add(newSong);
+					System.out.println(recordingTimes);
 					return true;
 				}
 			}
@@ -116,6 +117,8 @@ package model;
 			return list;
 		}
 		
-
+		public Map<Song,Integer> getRecording(){
+			return recordingTimes;
+		}
 	
 }
