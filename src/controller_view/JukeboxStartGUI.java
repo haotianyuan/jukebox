@@ -81,6 +81,7 @@ public class JukeboxStartGUI extends Application {
 	private Label status = new Label();
 	private Button button2 = new Button("Log out");
 	private Button button3 = new Button("Select songs");
+	private Button button4 = new Button("View Song List");
 	private Button button5 = new Button("Manage");
 	private HBox Hbox = new HBox();
 	// ------------------------------------------------------
@@ -122,8 +123,10 @@ public class JukeboxStartGUI extends Application {
 	
 	//-----------------------------------------------------------------------------------
 	private LocalDate local = LocalDate.now();
-	
-	
+	private ListView<String> displayList1=new ListView<String>();
+	private ObservableList<String> songs = FXCollections.observableArrayList();
+	private Stage newStage4 = new Stage();
+	private BorderPane pane1 = new BorderPane();
 	
 	
 	public static void main(String[] args) {
@@ -169,7 +172,7 @@ public class JukeboxStartGUI extends Application {
 		window.add(Hbox, 0, 0, 2, 2);
 		Hbox.setPadding(new Insets(0, 15, 0, 15));
 		Hbox.setSpacing(15);
-		Hbox.getChildren().addAll(button3);
+		Hbox.getChildren().addAll(button3,button4);
 		
 		window.setHgap(10);
 		window.setVgap(10);
@@ -192,6 +195,7 @@ public class JukeboxStartGUI extends Application {
 		button2.setOnAction(new buttonListener());
 		button5.setOnAction(new buttonListener());
 		button3.setOnAction(new tableViewListener());
+		button4.setOnAction(new listViewButtonListener());
 		// ---------------------------------------------------------------------------
 		
 		Scene scene = new Scene(window, 290, 250);
@@ -239,7 +243,7 @@ public class JukeboxStartGUI extends Application {
 			}
 		});
 		// -----------------------------------------------------
-		newStage3.setTitle("Song List");
+		newStage3.setTitle("Select songs");
 		Label label = new Label("Song List");
 		label.setFont(new Font("Arial", 16));
 		pane.setTop(label);
@@ -247,6 +251,13 @@ public class JukeboxStartGUI extends Application {
 		pane.setBottom(select);
 		Scene scene1 = new Scene(pane, 423, 320);
 		newStage3.setScene(scene1);
+		// -------------------------------------------------------
+		newStage4.setTitle("Song list");
+		displayList1.setItems(songs);
+		pane1.setCenter(displayList1);
+		Scene scene2 = new Scene(pane1, 360, 600);
+		newStage4.setScene(scene2);
+		
 	}
 	/*---------------------------------------------------------------------
 	  |  Method: playsongs
@@ -478,6 +489,8 @@ public class JukeboxStartGUI extends Application {
 		public void run() {
 			isplaying = false;
 			playlist.getList().remove(0);// delete the song 
+			songs.remove(0);
+			displayList1.getSelectionModel().select(0);
 			playsongs();
 		}
 	}
@@ -514,6 +527,8 @@ public class JukeboxStartGUI extends Application {
 					} else {
 						status.setText(selectedSong.getTitle() + " is selected");
 						selectedSong.setPlayed(selectedSong.getPlayed() + 1);
+						songs.add(selectedSong.getTitle());
+					displayList1.getSelectionModel().select(0);
 					}
 				} else {
 					System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
@@ -553,5 +568,15 @@ public class JukeboxStartGUI extends Application {
 			return null;
 		}
 		
+	}
+	
+	private class listViewButtonListener implements EventHandler<ActionEvent> {
+
+		@Override
+		public void handle(ActionEvent arg0) {
+			newStage4.show();
+			
+		}
+
 	}
 }
