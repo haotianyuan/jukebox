@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.Map.Entry;
 
 import javax.sound.sampled.AudioFileFormat;
@@ -30,23 +31,56 @@ import javafx.util.Duration;
 
 public class Song implements Comparable<Song> {
 	private String path;
-	private Media media;
+	private String artist;
 	private String title;
-	private double time;
+	private String time;
 	private int played;
-
+	private LocalDate localdate;
 	public Song(String path) {
 		this.path = path;
-		title = path.substring(10, path.length() - 4);
-		File file = new File(path);
-		URI uri = file.toURI();
-		media = new Media(uri.toString());
-		MusicPlayList list = new MusicPlayList();
-		if (list.recordingTimes.get(path) == null) {
-			played = 0;
-		} else {
-			played = list.recordingTimes.get(path);
+		if(path.compareTo("songfiles/Capture.mp3")==0) {
+			title="Pokemon Capture";
+			time="0:5";
+			artist="Pikachu";
 		}
+		else if(path.compareTo("songfiles/DanseMacabreViolinHook.mp3")==0) {
+			title="Danse Macabre";
+			time="0:34";
+			artist="Kevin MacLeod";
+		}
+		else if(path.compareTo("songfiles/DeterminedTumbao.mp3")==0) {
+			title="Determined Tumbao";
+			time="0:20";
+			artist="FreePlay Music";
+		}
+		else if(path.compareTo("songfiles/LongingInTheirHearts.mp3")==0) {
+			title="Longing In Their Hearts";
+			time="4:48";
+			artist="Bonnie Raitt";
+		}
+		else if(path.compareTo("songfiles/LopingSting.mp3")==0) {
+			title="Loping Sting";
+			time="0:5";
+			artist="Kevin MacLeod";
+		}
+		else if(path.compareTo("songfiles/SwingCheese.mp3")==0) {
+			title="Swing Cheese";
+			time="0:15";
+			artist="FreePlay Music";
+		}
+		else if(path.compareTo("songfiles/TheCurtainRises.mp3")==0) {
+			title="The Curtain Rises";
+			time="0:28";
+			artist="Kevin MacLeod";
+		}
+		else if(path.compareTo("songfiles/UntameableFire.mp3")==0) {
+			title="Untameable Fire";
+			time="4:42";
+			artist="Pierre Langer";
+		}
+		
+		played = 0;
+		localdate=LocalDate.now();
 		// time=media.getDuration().toSeconds();
 
 	}
@@ -88,23 +122,30 @@ public class Song implements Comparable<Song> {
 	  *-------------------------------------------------------------------*/
 	@Override
 	public int compareTo(Song o) {
-		if (this.getPath().equals(o.getPath()))
-			return 0;
-		return 1;
+		return this.getPath().compareTo(o.getPath());
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public double getTime() {
+	public String getTime() {
 		return time;
 	}
 
 	public int getPlayed() {
+		LocalDate current = LocalDate.now();
+		if(localdate.compareTo(current) < 0)
+		{
+			played=0;
+		}
 		return played;
 	}
-
+	
+	public String getArtist() {
+		return artist;
+	}
+	
 	public void setPlayed(int played) {
 		this.played = played;
 	}
