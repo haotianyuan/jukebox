@@ -8,15 +8,14 @@ package model;
 |             a single song
 *==============================================================*/
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.Map.Entry;
 
-import javax.sound.sampled.AudioFileFormat;
+import java.io.File;
+
+
+import java.net.URI;
+
+
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -88,9 +87,7 @@ public class Song implements Comparable<Song> {
 	  *-------------------------------------------------------------------*/
 	@Override
 	public int compareTo(Song o) {
-		if (this.getPath().equals(o.getPath()))
-			return 0;
-		return 1;
+		return this.getPath().compareTo(o.getPath());
 	}
 
 	public String getTitle() {
