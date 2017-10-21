@@ -8,9 +8,11 @@ package model;
 |             a single song
 *==============================================================*/
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Song implements Comparable<Song> {
+@SuppressWarnings("serial")
+public class Song implements Comparable<Song>,Serializable {
 	private String path;
 	private String artist;
 	private String title;
@@ -22,7 +24,7 @@ public class Song implements Comparable<Song> {
 		this.path = path;
 		if (path.compareTo("songfiles/Capture.mp3") == 0) {
 			title = "Pokemon Capture";
-			time = "0:5";
+			time = "0:05";
 			artist = "Pikachu";
 		} else if (path.compareTo("songfiles/DanseMacabreViolinHook.mp3") == 0) {
 			title = "Danse Macabre";
@@ -38,7 +40,7 @@ public class Song implements Comparable<Song> {
 			artist = "Bonnie Raitt";
 		} else if (path.compareTo("songfiles/LopingSting.mp3") == 0) {
 			title = "Loping Sting";
-			time = "0:5";
+			time = "0:05";
 			artist = "Kevin MacLeod";
 		} else if (path.compareTo("songfiles/SwingCheese.mp3") == 0) {
 			title = "Swing Cheese";
@@ -56,7 +58,7 @@ public class Song implements Comparable<Song> {
 
 		played = 0;
 		localdate = LocalDate.now();
-		// time=media.getDuration().toSeconds();
+		
 
 	}
 

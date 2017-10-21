@@ -13,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
@@ -28,15 +29,16 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.MusicPlayList;
 import model.Song;
+import model.SongCollection;
 import model.User;
 import model.tableView;
 import java.io.File;
 import java.net.URI;
 import java.time.LocalDate;
-
-
+import java.util.Optional;
 
 /*===============================================================
 |Author:      Haotian Yuan, Jiaming Hao
@@ -79,14 +81,17 @@ public class JukeboxStartGUI extends Application {
 	private Button button1 = new Button("Log in");
 	private Label label3 = new Label("Login first");
 	private Label status = new Label();
+	private Label status2 = new Label();
 	private Button button2 = new Button("Log out");
 	private Button button3 = new Button("Select songs");
-	private Button button4 = new Button("View Song List");
+	private Button button4 = new Button("Play List");
 	private Button button5 = new Button("Manage");
 	private HBox Hbox = new HBox();
 	// ------------------------------------------------------
 	// Following code composites the Accounts management interface
-	private ObservableList<User> userList = FXCollections.observableArrayList();
+
+	private ObservableList<User> userList;// needs to persistence !!!
+
 	private ObservableList<User> subList;
 	private ListView<User> displayList = new ListView<User>();
 	private Stage newStage = new Stage();
@@ -110,25 +115,33 @@ public class JukeboxStartGUI extends Application {
 	private ToggleGroup group = new ToggleGroup();
 	private String type;// indicate what kind of account created
 	// ------------------------------------------------------
-	private MusicPlayList playlist = new MusicPlayList();
+
+	private MusicPlayList playlist; // needs to be persistence !!!
+
 	private static MediaPlayer mediaPlayer;
 	private boolean vertify = false;
 	private User user;
 	private boolean isplaying = false;
-    //-----------------------------------------------------------------------------------
-	private static tableView tableViewer = new tableView();
+	// -----------------------------------------------------------------------------------
+	
+	private static tableView tableViewer;
+	
 	private Stage newStage3 = new Stage();
 	private BorderPane pane = new BorderPane();
-	private Button select=new Button("Select");
+	private Button select = new Button("Select");
+
+	// -----------------------------------------------------------------------------------
+	private LocalDate local;
+	private ListView<String> displayList1 = new ListView<String>();
 	
-	//-----------------------------------------------------------------------------------
-	private LocalDate local = LocalDate.now();
-	private ListView<String> displayList1=new ListView<String>();
 	private ObservableList<String> songs = FXCollections.observableArrayList();
+	
+	
 	private Stage newStage4 = new Stage();
 	private BorderPane pane1 = new BorderPane();
-	
-	
+	//--------------------------------------------------------------
+	private SongCollection songCollection;
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -144,36 +157,26 @@ public class JukeboxStartGUI extends Application {
 	  *-------------------------------------------------------------------*/
 	@Override
 	public void start(Stage primaryStage) {
-		//------------------------------------------------------------------
+
+		
+		setUpUserListAndPlayListAndSongCollectionAndDate();
+
+		// ----------------------------------------------------------------------
+
 		autoUpdater r = new autoUpdater();
 		Thread t = new Thread(r);
 		t.setDaemon(true);
 		t.start();
-		System.out.println("AutoUpdater starts!");
-		//-----------------------------
-		
-		
-		
-		// -----------------------set up the userList-----------------------------
-		User a = new User("Chris", "1", false);
-		User b = new User("Devon", "22", false);
-		User c = new User("River", "333", false);
-		User d = new User("Ryan", "4444", false);
-		User e = new User("Merlin", "7777777", true);
+		System.out.println("AutoUpdater starts!");//debug
+		// -----------------------------
 
-		userList.add(a);
-		userList.add(b);
-		userList.add(c);
-		userList.add(d);
-		userList.add(e);
-		// ----------------------------------------------------------------------
 		window.setPadding(new Insets(0, 8, 0, 5));
 		GridPane.setHalignment(label2, HPos.RIGHT);
 		window.add(Hbox, 0, 0, 2, 2);
 		Hbox.setPadding(new Insets(0, 15, 0, 15));
 		Hbox.setSpacing(15);
-		Hbox.getChildren().addAll(button3,button4);
-		
+		Hbox.getChildren().addAll(button3, button4);
+
 		window.setHgap(10);
 		window.setVgap(10);
 		window.add(label1, 0, 3);
@@ -185,11 +188,13 @@ public class JukeboxStartGUI extends Application {
 		window.add(button1, 1, 5);
 		window.add(label3, 1, 6);
 		window.add(button2, 1, 7);
-		//---------------------------------------------------------------
-		window.add(button5, 1, 5);
+		// ---------------------------------------------------------------
+		window.add(button5, 1, 6);
 		button5.setVisible(false);
-		window.add(status, 0, 3,2,3);
+		window.add(status, 0, 3, 2, 3);
+		window.add(status2, 0, 4, 2, 3);
 		status.setVisible(false);
+		status2.setVisible(false);
 		
 		button1.setOnAction(new buttonListener());
 		button2.setOnAction(new buttonListener());
@@ -197,10 +202,11 @@ public class JukeboxStartGUI extends Application {
 		button3.setOnAction(new tableViewListener());
 		button4.setOnAction(new listViewButtonListener());
 		// ---------------------------------------------------------------------------
-		
+
 		Scene scene = new Scene(window, 290, 250);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		primaryStage.setOnCloseRequest(new WritePersistentObject());
 		// -------------------------------------------------
 		// Following code is the layout of Accounts management interface
 		all.setTop(searchBar);
@@ -233,7 +239,7 @@ public class JukeboxStartGUI extends Application {
 		newStage2.setScene(sc2);
 		normal.setSelected(true);
 		type = "Normal";// default is normal account
-		
+
 		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			@Override
 			public void changed(ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) {
@@ -254,11 +260,87 @@ public class JukeboxStartGUI extends Application {
 		// -------------------------------------------------------
 		newStage4.setTitle("Song list");
 		displayList1.setItems(songs);
+		displayList1.getSelectionModel().select(0);
 		pane1.setCenter(displayList1);
 		Scene scene2 = new Scene(pane1, 360, 600);
 		newStage4.setScene(scene2);
-		
+		playsongs();
 	}
+
+	/*---------------------------------------------------------------------
+	  |  Method: setUpUserListAndPlayList
+	  |
+	  |  Purpose:   Set up the Lists either from scratch or read from 
+	  |             file 
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
+	public void setUpUserListAndPlayListAndSongCollectionAndDate() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Start Up Option");
+		alert.setHeaderText("Press ok to read persistent object(s)");
+		alert.setContentText("Press cancel while system testing.");
+		Optional<ButtonType> result = alert.showAndWait();
+
+		if (result.get() == ButtonType.OK) {
+			
+			userList = JukeboxPersistence.readUserList();
+			
+			playlist = JukeboxPersistence.readMusicPlayList();
+			
+			for(Song song: playlist.getList())
+			{
+				songs.add(song.getTitle());
+			}
+			
+			songCollection = JukeboxPersistence.readSongCollection();
+			tableViewer = new tableView(songCollection);
+			local = JukeboxPersistence.readDate();
+			
+		} else {
+			userList = FXCollections.observableArrayList();
+			User a = new User("Chris", "1", false);
+			User b = new User("Devon", "22", false);
+			User c = new User("River", "333", false);
+			User d = new User("Ryan", "4444", false);
+			User e = new User("Merlin", "7777777", true);
+
+			userList.add(a);
+			userList.add(b);
+			userList.add(c);
+			userList.add(d);
+			userList.add(e);
+			//------------------------------------------------------
+			playlist = new MusicPlayList();
+			
+			tableViewer = new tableView();
+			
+			local = LocalDate.now();
+		}
+	}
+	
+	
+
+	private class WritePersistentObject implements EventHandler<WindowEvent> {
+
+		@Override
+		public void handle(WindowEvent we) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Start Up Option");
+			alert.setHeaderText("Press ok to write persitent objects");
+			alert.setContentText("Press cancel to not save.");
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK) {
+				JukeboxPersistence.writeUserList(userList);
+				JukeboxPersistence.writeMusicPlayList(playlist);
+				JukeboxPersistence.writeSongCollection(tableViewer.getSongCollection());
+				JukeboxPersistence.saveDate(local);
+			}
+		}
+	}
+
 	/*---------------------------------------------------------------------
 	  |  Method: playsongs
 	  |
@@ -270,13 +352,15 @@ public class JukeboxStartGUI extends Application {
 	  *-------------------------------------------------------------------*/
 	public void playsongs() {
 		// System.out.println(playlist.getList().size());//debug
+		System.out.println("isplaying: " + isplaying);//debug
+		System.out.println("The size of playlist: " + playlist.getList().size());//debug
 		while (isplaying == false && playlist.getList().size() != 0) {
 			String path = playlist.getList().get(0).getPath();
-			//System.out.println(playlist.getList().get(0).getPath());//debug
+			// System.out.println(playlist.getList().get(0).getPath());//debug
 			File file = new File(path);
 			URI uri = file.toURI();
 			Media media = new Media(uri.toString());
-			
+
 			// Play the song
 			mediaPlayer = new MediaPlayer(media);
 			mediaPlayer.setAutoPlay(true);
@@ -286,29 +370,25 @@ public class JukeboxStartGUI extends Application {
 		}
 
 	}
-	/*===============================================================
-	|Class name:  buttonListener
-	|
-	|Description:  Class includes method calling different methods 
-	|              depending on which button has been pressed by user            
-	*==============================================================*/
+
+	
 	private class buttonListener implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
-			
+
 			String ID = textField1.getText();
 			String password = textField2.getText();
 			boolean isAdmin = false;
-			
+
 			if (button1 == arg0.getSource()) {
 				for (int i = 0; i < userList.size(); i++) {
 					// check if the account and password are valid
 					if (userList.get(i).getPassword().compareTo(password) == 0
 							&& userList.get(i).getAccountName().compareTo(ID) == 0) {
 						vertify = true;
-						user = userList.get(i); 
-						//---------------------following part change the GUI-------------
+						user = userList.get(i);
+						// ---------------------following part change the GUI-------------
 						textField1.setVisible(false);
 						textField2.setVisible(false);
 						label1.setVisible(false);
@@ -316,12 +396,14 @@ public class JukeboxStartGUI extends Application {
 						button1.setVisible(false);
 						label3.setVisible(false);
 						status.setVisible(true);
-						status.setText("		  	   Hello, " + user.getAccountName() + "\n");
-							
+						status2.setVisible(true);
+						status.setText("		  	  Hello, " + user.getAccountName() + "\n");
+						status2.setText("                      Today's times: " + user.getchance());
+
 						// ------------------------------This is what I added---------------
 						isAdmin = userList.get(i).getAdmin();
 						System.out.println("The current user is:" + user.getAccountName());// debug
-					
+
 						// -------------------------------------------
 						break;
 					} else {
@@ -329,20 +411,17 @@ public class JukeboxStartGUI extends Application {
 					}
 				}
 			}
-			
-			if (isAdmin) 
-			{
+
+			if (isAdmin) {
 				button5.setVisible(true);
-			} 
-			if(button5 == arg0.getSource())
-			{
+			}
+			if (button5 == arg0.getSource()) {
 				newStage.show();
 				registerListeners();
 			}
 			// if the log out button is pressed, check whether there is a user logged in
-			if (button2 == arg0.getSource() && vertify == true) 
-			{
-				System.out.println("User: " + user.getAccountName() + " logged out");//debug
+			if (button2 == arg0.getSource() && vertify == true) {
+				System.out.println("User: " + user.getAccountName() + " logged out");// debug
 				vertify = false;
 				textField1.clear();
 				textField2.clear();
@@ -353,11 +432,13 @@ public class JukeboxStartGUI extends Application {
 				button1.setVisible(true);
 				label3.setVisible(true);
 				status.setVisible(false);
+				status2.setVisible(false);
 				button5.setVisible(false);
 				label3.setText("Login first");
 				newStage.close();
 			}
 		}
+
 		/*---------------------------------------------------------------------
 		  |  Method: registerListeners
 		  |
@@ -367,21 +448,15 @@ public class JukeboxStartGUI extends Application {
 		  |
 		  |  Returns:    None
 		  *-------------------------------------------------------------------*/
-		private void registerListeners() 
-		{
+		private void registerListeners() {
 			searchBar.textProperty().addListener(new SearchBarListener());
 			removeButton.setOnAction(new RemoveButtonListener());
 			addAccountButtton.setOnAction(new addAccountButtonListener());
 		}
 
 	}
-	
 
-	/*===============================================================
-	|Class name:  SearchBarListener
-	|
-	|Description:  Class includes method setting the searchBar
-	*==============================================================*/
+	
 	private class SearchBarListener implements ChangeListener<String> {
 		@Override
 		public void changed(ObservableValue<? extends String> obs, String old, String newValue) {
@@ -394,36 +469,28 @@ public class JukeboxStartGUI extends Application {
 		}
 	}
 
-	/*===============================================================
-	|Class name:  RemoveButtonListener
-	|
-	|Description:  Class includes method setting the Remove Button
-	*==============================================================*/
+	
 	private class RemoveButtonListener implements EventHandler<ActionEvent> {
 		@Override
 		public void handle(ActionEvent event) {
 			User userToBeMoved = displayList.getSelectionModel().getSelectedItem();
 			removeButton.setText("Remove Selected Account");
-			if(userToBeMoved.getAccountName().equals(user.getAccountName()))
-			{
+			if (userToBeMoved!=null&&userToBeMoved.getAccountName().equals(user.getAccountName())) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Alert");
-			    alert.setHeaderText("An Account Can Not Remove Itself");
-			    alert.showAndWait();
+				alert.setHeaderText("An Account Can Not Remove Itself");
+				alert.showAndWait();
 				return;
 			}
-			
+
 			if (subList != null)
 				subList.remove(userToBeMoved);
 
 			userList.remove(userToBeMoved);
 		}
 	}
-	/*===============================================================
-	|Class name:  addAccountButtonListener
-	|
-	|Description:  Class includes method setting addAccountButton
-	*==============================================================*/
+
+	
 	private class addAccountButtonListener implements EventHandler<ActionEvent> {
 
 		@Override
@@ -433,18 +500,15 @@ public class JukeboxStartGUI extends Application {
 		}
 
 	}
-	/*===============================================================
-	|Class name:  comfirmButtonListener
-	|
-	|Description:  Class includes method setting confirmButton
-	*==============================================================*/
+
+	
 	private class comfirmButtonListener implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
 			String newAcName = textField3.getText();
 			String newPw = textField4.getText();
-			// erase the trailing and leading spaces 
+			// erase the trailing and leading spaces
 			newAcName = newAcName.trim();
 			newPw = newAcName.trim();
 			if (newAcName.equals("") || newPw.equals("")) {
@@ -471,42 +535,38 @@ public class JukeboxStartGUI extends Application {
 			label6.setText("*Note: Spaces will be ignored");
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Message");
-		    alert.setHeaderText("New Account: " + newAcName + " has been created ");
-		    alert.showAndWait();
+			alert.setHeaderText("New Account: " + newAcName + " has been created ");
+			alert.showAndWait();
 			newStage2.close();
 
 		}
 
 	}
-	/*===============================================================
-	|Class name:  EndOfSongHandler
-	|
-	|Description:  Class used for play songs, it implements runnable, so
-	|              can be run in a new separate thread
-	*==============================================================*/
+
+	
 	private class EndOfSongHandler implements Runnable {
 		@Override
 		public void run() {
 			isplaying = false;
-			playlist.getList().remove(0);// delete the song 
+			playlist.getList().remove(0);// delete the song
 			songs.remove(0);
 			displayList1.getSelectionModel().select(0);
 			playsongs();
 		}
 	}
-	
+
 	private class tableViewListener implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
-			if(vertify==true) {
-			newStage3.show();
-			select.setOnAction(new SelectButtonListener());
+			if (vertify == true) {
+				newStage3.show();
+				select.setOnAction(new SelectButtonListener());
 			}
 		}
 
 	}
-	
+
 	private class SelectButtonListener implements EventHandler<ActionEvent> {
 
 		private Song selectedSong;
@@ -523,14 +583,28 @@ public class JukeboxStartGUI extends Application {
 					// System.out.println(hint);//debug
 					if (!hint) {
 						user.recovChance();
+						
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setTitle("Alert");
+						alert.setHeaderText(selectedSong.getTitle() + " already selected 3 times today");
+						alert.showAndWait();
+						
 						status.setText(selectedSong.getTitle() + " already selected 3 times today");
 					} else {
-						status.setText(selectedSong.getTitle() + " is selected");
+						status.setText("      " + selectedSong.getTitle() + " is selected");
 						selectedSong.setPlayed(selectedSong.getPlayed() + 1);
+						
 						songs.add(selectedSong.getTitle());
-					displayList1.getSelectionModel().select(0);
+						displayList1.getSelectionModel().select(0);
+						status2.setText("                      Today's times: " + user.getchance());
 					}
 				} else {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Alert");
+					alert.setHeaderText("User: " + user.getAccountName() + " already runs out of today's times");
+					alert.showAndWait();
+					
+					status.setText(selectedSong.getTitle() + " already selected 3 times today");
 					System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
 					status.setText("   Sorry, You run out today's times");
 				}
@@ -540,42 +614,47 @@ public class JukeboxStartGUI extends Application {
 			tableViewer.refresh();
 		}
 	}
-	
-	private class autoUpdater extends Task<Object>
-	{
+
+	private class autoUpdater extends Task<Object> {
 
 		@Override
 		public void run() {
 			while (true) {
 				LocalDate now = LocalDate.now();
-				//System.out.println("Begin update......");
+				
 				if (local.compareTo(now) < 0) {
 					local = now;
-					 System.out.println("Begin update......");
+					System.out.println("Begin update......");
 					for (Song song : tableViewer.getItems()) {
 						song.setPlayed(song.getPlayed() % 3);
 					}
-					 System.out.println("Update finishes......");
-					tableViewer.refresh();
 					
+					for(User u:userList)
+					{
+						u.resetChan();
+					}
+					
+					System.out.println("Update finishes......");
+					tableViewer.refresh();
+
 				}
 			}
 		}
 
 		@Override
 		protected Object call() throws Exception {
-			// TODO Auto-generated method stub
+			
 			return null;
 		}
-		
+
 	}
-	
+
 	private class listViewButtonListener implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
 			newStage4.show();
-			
+
 		}
 
 	}

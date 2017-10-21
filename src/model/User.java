@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /*===============================================================
@@ -10,7 +11,8 @@ import java.time.LocalDate;
 |Description: A class represents users
 *==============================================================*/
 
-public class User {
+@SuppressWarnings("serial")
+public class User implements Serializable{
 	
 	private String accountName;
 	private String password;
@@ -128,6 +130,11 @@ public class User {
 		if(admin)
 			type = "Admin";
 		return "Account name: " + accountName + "    Account Type: " + type;
+	}
+	
+	public void resetChan()
+	{
+		chance = 3;
 	}
 	
 }

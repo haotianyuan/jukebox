@@ -1,12 +1,12 @@
 package model;
 
-import java.io.IOException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 
+@SuppressWarnings("serial")
 public class SongCollection implements Serializable{
 	private List<Song> Songs;
 	
