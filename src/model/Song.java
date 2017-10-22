@@ -125,4 +125,9 @@ public class Song implements Comparable<Song>,Serializable {
 	public void setPlayed(int played) {
 		this.played = played;
 	}
+	
+	public void setLocal(LocalDate now)
+	{
+		localdate = now;
+	}
 }

@@ -34,5 +34,9 @@ public class SongCollection implements Serializable{
 		    return Songs.get(index);
 	 }
 	 
+	 public List<Song> getSongList()
+	 {
+		 return Songs;
+	 }
 	 
 }

@@ -594,6 +594,8 @@ public class JukeboxStartGUI extends Application {
 						status.setText("      " + selectedSong.getTitle() + " is selected");
 						selectedSong.setPlayed(selectedSong.getPlayed() + 1);
 						
+						System.out.println("Today's chosen times: " + selectedSong.getPlayed());//debug
+						
 						songs.add(selectedSong.getTitle());
 						displayList1.getSelectionModel().select(0);
 						status2.setText("                      Today's times: " + user.getchance());
@@ -605,6 +607,7 @@ public class JukeboxStartGUI extends Application {
 					alert.showAndWait();
 					
 					status.setText(selectedSong.getTitle() + " already selected 3 times today");
+					
 					System.out.println("User: " + user.getAccountName() + " already runs out of chances");// debug
 					status.setText("   Sorry, You run out today's times");
 				}
@@ -626,7 +629,7 @@ public class JukeboxStartGUI extends Application {
 					local = now;
 					System.out.println("Begin update......");
 					for (Song song : tableViewer.getItems()) {
-						song.setPlayed(song.getPlayed() % 3);
+						song.setPlayed(song.getPlayed());
 					}
 					
 					for(User u:userList)
@@ -634,6 +637,10 @@ public class JukeboxStartGUI extends Application {
 						u.resetChan();
 					}
 					
+					for(Song song: tableViewer.getSongCollection().getSongList())
+					{
+						song.setLocal(local);
+					}
 					System.out.println("Update finishes......");
 					tableViewer.refresh();
 
