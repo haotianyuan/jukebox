@@ -48,7 +48,7 @@ import java.util.Optional;
 |Description: The GUI of Jukebox, user can log in, select song
 |             and log out, every user can select up to 3 songs 
 |             per day, and no songs can be selected over 3 times
-|             in one day.
+|             in one day. aaa
 |
 |Functional spike:   Log in to Chris to check log in works
 |                                ↓
