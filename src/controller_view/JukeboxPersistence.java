@@ -15,9 +15,26 @@ import javafx.collections.ObservableList;
 import model.MusicPlayList;
 import model.SongCollection;
 import model.User;
+/*===============================================================
+|Author:      Jiaming Hao
+|
+|Class name:  JukeboxPersistence
+|
+|Description: A class only contains static methods to implement
+|             the persistence of JukeBox
+*==============================================================*/
 
 public class JukeboxPersistence {
 
+	/*---------------------------------------------------------------------
+	  |  Method:     writeUserList
+	  |
+	  |  Purpose:    Write the current userList to the file named "listOfUsers"
+	  |  
+	  |  Parameters: ObservableList<User> userList
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
 	public static void writeUserList(ObservableList<User> userList) {
 		try {
 			List<User> serialList = new ArrayList<User>(userList);
@@ -31,7 +48,15 @@ public class JukeboxPersistence {
 			System.out.println("IoException error when writing userList");
 		}
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method:     writeMusicPlayList
+	  |
+	  |  Purpose:    Write the current playlist to the file named "listOfMusic"
+	  |  
+	  |  Parameters: MusicPlayList playlist
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
 	public static void writeMusicPlayList(MusicPlayList playlist) {
 		try {
 			FileOutputStream bytesToDisk = new FileOutputStream("listOfMusic");
@@ -44,7 +69,15 @@ public class JukeboxPersistence {
 			System.out.println("IoException error when writing playList");
 		}
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method:     readUserList
+	  |
+	  |  Purpose:    Read the former userList from file "listOfUsers"
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    ObservableList<User>
+	  *-------------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
 	public static ObservableList<User> readUserList() {
 		List<User> list = null;
@@ -59,7 +92,15 @@ public class JukeboxPersistence {
 		}
 		return FXCollections.observableArrayList(list);
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method:     readMusicPlayList
+	  |
+	  |  Purpose:    Read the former PlayList from file "listOfMusic"
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    MusicPlayList
+	  *-------------------------------------------------------------------*/
 	public static MusicPlayList readMusicPlayList() {
 		MusicPlayList playList = null;
 		try {
@@ -73,7 +114,15 @@ public class JukeboxPersistence {
 		}
 		return playList;
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method:     writeSongCollection
+	  |
+	  |  Purpose:    Write the current songCollection to the file named "songCollection"
+	  |  
+	  |  Parameters:  songCollection songCollection
+	  |
+	  |  Returns:     None
+	  *-------------------------------------------------------------------*/
 	public static void writeSongCollection(SongCollection songCollection)
 	{
 		try {
@@ -88,7 +137,15 @@ public class JukeboxPersistence {
 			System.out.println("IoException error when writing songCollection");
 		}
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method:     readSongCollection
+	  |
+	  |  Purpose:    Read the former songCollection object from file "songCollection"
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    SongCollection
+	  *-------------------------------------------------------------------*/
 	public static SongCollection readSongCollection()
 	{
 		SongCollection collection = null;
@@ -103,7 +160,15 @@ public class JukeboxPersistence {
 		}
 		return collection;
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method:     saveDate
+	  |
+	  |  Purpose:    Write the current LocalDate object to file named "formerDate"
+	  |  
+	  |  Parameters:  LocalDate local
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
 	public static void saveDate(LocalDate local)
 	{
 		try {
@@ -117,7 +182,15 @@ public class JukeboxPersistence {
 			System.out.println("IoException error when writing local date");
 		}
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method:     readDate
+	  |
+	  |  Purpose:    Read the former LocalDate object from the file "formerDate"
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    LocalDate
+	  *-------------------------------------------------------------------*/
 	public static LocalDate readDate()
 	{
 		LocalDate former = null;

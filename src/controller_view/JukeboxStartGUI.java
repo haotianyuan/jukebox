@@ -49,11 +49,8 @@ import java.util.Optional;
 |Description: The GUI of Jukebox, user can log in, select song
 |             and log out, every user can select up to 3 songs 
 |             per day, and no songs can be selected over 3 times
-<<<<<<< HEAD
 |             in one day. 
-=======
-|             in one day. aaa
->>>>>>> 43a8f4f6b428a28510e69c608f62ac22c73093bc
+|
 |
 |Functional spike:   Log in to Chris to check log in works
 |                                ↓
@@ -94,9 +91,7 @@ public class JukeboxStartGUI extends Application {
 	private HBox Hbox = new HBox();
 	// ------------------------------------------------------
 	// Following code composites the Accounts management interface
-
-	private ObservableList<User> userList;// needs to persistence !!!
-
+	private ObservableList<User> userList;
 	private ObservableList<User> subList;
 	private ListView<User> displayList = new ListView<User>();
 	private Stage newStage = new Stage();
@@ -120,28 +115,20 @@ public class JukeboxStartGUI extends Application {
 	private ToggleGroup group = new ToggleGroup();
 	private String type;// indicate what kind of account created
 	// ------------------------------------------------------
-
 	private MusicPlayList playlist; 
-
-	private static MediaPlayer mediaPlayer;
+    private static MediaPlayer mediaPlayer;
 	private boolean vertify = false;
 	private User user;
 	private boolean isplaying = false;
 	// -----------------------------------------------------------------------------------
-	
 	private static tableView tableViewer;
-	
 	private Stage newStage3 = new Stage();
 	private BorderPane pane = new BorderPane();
 	private Button select = new Button("Select");
-
-	// -----------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------
 	private LocalDate local;
 	private ListView<String> displayList1 = new ListView<String>();
-	
 	private ObservableList<String> songs = FXCollections.observableArrayList();
-	
-	
 	private Stage newStage4 = new Stage();
 	private BorderPane pane1 = new BorderPane();
 	//--------------------------------------------------------------
@@ -167,14 +154,11 @@ public class JukeboxStartGUI extends Application {
 		setUpUserListAndPlayListAndSongCollectionAndDate();
 
 		// ----------------------------------------------------------------------
-
-		autoUpdater r = new autoUpdater();
+        autoUpdater r = new autoUpdater();
 		Thread t = new Thread(r);
-		
-		
 		t.setDaemon(true);
 		t.start();
-		System.out.println("AutoUpdater starts!");//debug
+		//System.out.println("AutoUpdater starts!");//debug
 		// -----------------------------
 
 		window.setPadding(new Insets(0, 8, 0, 5));
@@ -183,7 +167,6 @@ public class JukeboxStartGUI extends Application {
 		Hbox.setPadding(new Insets(0, 15, 0, 15));
 		Hbox.setSpacing(15);
 		Hbox.getChildren().addAll(button3, button4);
-
 		window.setHgap(10);
 		window.setVgap(10);
 		window.add(label1, 0, 3);
@@ -202,14 +185,12 @@ public class JukeboxStartGUI extends Application {
 		window.add(status2, 0, 4, 2, 3);
 		status.setVisible(false);
 		status2.setVisible(false);
-		
 		button1.setOnAction(new buttonListener());
 		button2.setOnAction(new buttonListener());
 		button5.setOnAction(new buttonListener());
 		button3.setOnAction(new tableViewListener());
 		button4.setOnAction(new listViewButtonListener());
 		// ---------------------------------------------------------------------------
-
 		Scene scene = new Scene(window, 290, 250);
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -278,7 +259,7 @@ public class JukeboxStartGUI extends Application {
 	  |  Method:    setUpUserListAndPlayList
 	  |
 	  |  Purpose:   Set up the Lists either from scratch or read from 
-	  |             file 
+	  |             files 
 	  |  
 	  |  Parameters: None
 	  |
@@ -321,9 +302,7 @@ public class JukeboxStartGUI extends Application {
 			userList.add(e);
 			//------------------------------------------------------
 			playlist = new MusicPlayList();
-			
 			tableViewer = new tableView();
-			
 			local = LocalDate.now();
 		}
 	}
@@ -333,7 +312,7 @@ public class JukeboxStartGUI extends Application {
 	  |  Class Name:  WritePersistentObject
 	  |  
 	  |  Description: Every time asking the user whether she or he wants
-	  |               to save the current state. 
+	  |               to save the current state of the JukeBox. 
 	  *-------------------------------------------------------------------*/
 	private class WritePersistentObject implements EventHandler<WindowEvent> {
 
@@ -416,8 +395,6 @@ public class JukeboxStartGUI extends Application {
 						status2.setVisible(true);
 						status.setText("		  	  Hello, " + user.getAccountName() + "\n");
 						status2.setText("                      Today's times: " + user.getchance());
-
-						// ------------------------------This is what I added---------------
 						isAdmin = userList.get(i).getAdmin();
 						System.out.println("The current user is:" + user.getAccountName());// debug
 
@@ -687,12 +664,10 @@ public class JukeboxStartGUI extends Application {
 					if(user!=null)
 					{
 						Platform.runLater(new Runnable(){
-
 							@Override
 							public void run() {
 								status2.setText("                      Today's times: " + user.getchance());
 							}
-							   
 							});
 					}
 					

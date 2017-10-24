@@ -111,7 +111,15 @@ public class MusicPlayList implements Serializable {
 	public ArrayList<Song> getList() {
 		return list;
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method: getRecording
+	  |
+	  |  Purpose:  A method return the Map inside the play list
+	  |  
+	  |  Parameters: None 
+	  |
+	  |  Returns:    Map<Song, Integer>
+	  *-------------------------------------------------------------------*/
 	public Map<Song, Integer> getRecording() {
 		return recordingTimes;
 	}

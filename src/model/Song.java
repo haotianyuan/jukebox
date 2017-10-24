@@ -16,9 +16,9 @@ public class Song implements Comparable<Song>,Serializable {
 	private String path;
 	private String artist;
 	private String title;
-	private String time;
-	private int played;
-	private LocalDate localdate;
+	private String time;// the duration of the song
+	private int played; // record how many times played in a day
+	private LocalDate localdate; 
 
 	public Song(String path) {
 		this.path = path;
@@ -101,15 +101,39 @@ public class Song implements Comparable<Song>,Serializable {
 	public int compareTo(Song o) {
 		return this.getPath().compareTo(o.getPath());
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method:   getTitle
+	  |
+	  |  Purpose:   A method returns the title of the song
+	  |  
+	  |  Parameters: None 
+	  |
+	  |  Returns:    String
+	  *-------------------------------------------------------------------*/
 	public String getTitle() {
 		return title;
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method:   getTime
+	  |
+	  |  Purpose:   A method returns the duration of the song
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    String
+	  *-------------------------------------------------------------------*/
 	public String getTime() {
 		return time;
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method:   getPlayed
+	  |
+	  |  Purpose:   A method returns the play times of the song in one day
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    int
+	  *-------------------------------------------------------------------*/
 	public int getPlayed() {
 		LocalDate current = LocalDate.now();
 		if (localdate.compareTo(current) < 0) {
@@ -117,15 +141,39 @@ public class Song implements Comparable<Song>,Serializable {
 		}
 		return played;
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method:   getArtist
+	  |
+	  |  Purpose:   A method returns the Artist of the song
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    String
+	  *-------------------------------------------------------------------*/
 	public String getArtist() {
 		return artist;
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method:   setPlayed
+	  |
+	  |  Purpose:   A method sets the play time of the song
+	  |  
+	  |  Parameters: int
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
 	public void setPlayed(int played) {
 		this.played = played;
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method:   setLocal
+	  |
+	  |  Purpose:   A method sets the LocalDate instance variable 
+	  |  
+	  |  Parameters: LocalDate
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
 	public void setLocal(LocalDate now)
 	{
 		localdate = now;
