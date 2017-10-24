@@ -3,6 +3,9 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+
+
+
 /*===============================================================
 |Author:     Haotian Yuan  Jiaming Hao
 |
@@ -20,6 +23,7 @@ public class User implements Serializable{
 	private int chance;// three times for each day
 	private LocalDate localDate;
 	
+	
 	public User(String name,String password,boolean admin) 
 	{
 		accountName=name;
@@ -27,6 +31,7 @@ public class User implements Serializable{
 		this.admin=admin;
 		chance=3;
 		localDate=LocalDate.now();
+		
 	}
 	/*---------------------------------------------------------------------
 	  |  Method: selectSong
@@ -136,5 +141,6 @@ public class User implements Serializable{
 	{
 		chance = 3;
 	}
+	
 	
 }
