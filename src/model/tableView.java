@@ -7,7 +7,14 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
+/*===============================================================
+|Author:     Haotian Yuan  
+|
+|Class name:  tableView
+|
+|Description: A class composes the table view of the selection songs
+|             including the artists, play times, title, and duration.
+*==============================================================*/
 
 public class tableView extends TableView<Song>{
 	
@@ -59,7 +66,16 @@ public class tableView extends TableView<Song>{
 		 this.getSelectionModel().select(0);
 	
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method: setObserverListToViewCurrentSongCollection()
+	  |
+	  |  Purpose:   A helper method called by constructor to set up the 
+	  |             tableView 
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
 	private void setObserverListToViewCurrentSongCollection()  {
 		 songCollection = new SongCollection();
 		ObservableList<Song> Songs = FXCollections.observableArrayList();
@@ -69,7 +85,15 @@ public class tableView extends TableView<Song>{
 		 this.setItems(Songs);
 		 this.getSelectionModel().select(0);
 	}
-
+	/*---------------------------------------------------------------------
+	  |  Method: getSongCollection
+	  |
+	  |  Purpose:    get the song collection used to make the tableView
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    SongCollection
+	  *-------------------------------------------------------------------*/
 	public SongCollection getSongCollection()
 	{
 		return this.songCollection;

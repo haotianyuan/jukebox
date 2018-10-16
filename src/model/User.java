@@ -136,7 +136,15 @@ public class User implements Serializable{
 			type = "Admin";
 		return "Account name: " + accountName + "    Account Type: " + type;
 	}
-	
+	/*---------------------------------------------------------------------
+	  |  Method: resetChan
+	  |
+	  |  Purpose:   Method used to reset every user's chance in a new day
+	  |  
+	  |  Parameters: None
+	  |
+	  |  Returns:    None
+	  *-------------------------------------------------------------------*/
 	public void resetChan()
 	{
 		chance = 3;
